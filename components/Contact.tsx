@@ -35,10 +35,10 @@ const socialLinks = [
 
 export default function Contact() {
   return (
-    <div className="w-full h-full max-h-full flex flex-col bg-white rounded-xl shadow-2xl overflow-hidden">
+    <div className="w-full h-full max-h-full flex flex-col bg-card rounded-xl shadow-2xl overflow-hidden">
       {/* Heading */}
       <div className="pt-6 pb-4 px-4">
-        <h2 className="text-4xl font-[cursive] text-center mb-4 underline decoration-indigo-500 decoration-2 text-gray-800">
+        <h2 className="text-4xl font-[cursive] text-center mb-4 underline decoration-indigo-500 decoration-2 text-foreground">
           Connect with me 🧑‍🤝‍🧑
         </h2>
       </div>
@@ -48,18 +48,18 @@ export default function Contact() {
           {socialLinks.map(({ id, label, url, icon, buttonText, img, ring }) => (
             <div
               key={id}
-              className="rounded-lg bg-gray-900 p-6 flex flex-col items-center gap-4 shadow-md"
+              className="rounded-lg bg-muted p-6 flex flex-col items-center gap-4 shadow-md"
             >
               <img
                 src={img}
                 alt={`${label} Profile`}
-                className={`w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 ${ring} bg-gray-300`}
+                className={`w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 ${ring} bg-muted`}
               />
               <a
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-3 mt-2 bg-violet-600 hover:bg-violet-700 text-white text-lg font-semibold rounded-lg px-6 py-3 w-full justify-center transition"
+                className="flex items-center space-x-3 mt-2 bg-primary hover:bg-primary/80 text-primary-foreground text-lg font-semibold rounded-lg px-6 py-3 w-full justify-center transition"
               >
                 {icon}
                 <span>{buttonText}</span>

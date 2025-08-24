@@ -89,7 +89,7 @@ export default function Skills() {
   ]
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-2">
+    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 space-y-2 overflow-y-auto">
       <h2 className="text-3xl font-bold mb-1 text-center underline decoration-indigo-500 decoration-2 font-[cursive]">
         Technical Skills
       </h2>
@@ -100,7 +100,7 @@ export default function Skills() {
       {skillsData.map(({ field, subfields, bgImage }) => (
         <Card
           key={field}
-          className="relative overflow-hidden"
+          className="relative overflow-hidden w-full max-w-full min-h-[320px] mb-8"
           style={{
             backgroundImage: `url(${bgImage})`,
             backgroundSize: "cover",

@@ -89,7 +89,7 @@ const Terminal: React.FC<TerminalProps> = ({ onOpenWindow }) => {
   }
 
   return (
-    <div className="w-full h-full bg-black text-green-400 font-mono text-sm p-2 flex flex-col">
+    <div className="w-full h-full bg-card text-foreground font-mono text-sm p-2 flex flex-col">
       <div ref={terminalRef} className="flex-1 overflow-y-auto mb-2">
         {history.map((line, idx) => (
           <div key={idx} className="whitespace-pre-wrap">
@@ -98,13 +98,13 @@ const Terminal: React.FC<TerminalProps> = ({ onOpenWindow }) => {
         ))}
       </div>
       <div className="flex items-center">
-        <span className="text-green-500 mr-1">$</span>
+        <span className="text-primary mr-1">$</span>
         <input
           type="text"
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 bg-transparent outline-none text-green-400 placeholder-green-600"
+          className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
           placeholder="Type a command..."
           autoFocus
         />
