@@ -8,7 +8,7 @@ const experience = [
     title: "Web Development & Cyber Malware Instructor",
     company: "Hack Secure",
     period: "Jan, 2025 - April, 2025",
-    description: "Freelanced with Hack Secure (Jan–Apr 2025), teaching web development and cybersecurity basics, including malware analysis and secure coding practices through hands-on sessions and practical projects.",
+    description: "Freelanced with Hack Secure (Jan–Apr 2025), teaching cybersecurity basics, including malware analysis and secure coding practices through hands-on sessions and practical projects. Also developed the Full Stack website for Students courses. (not finished the website work due administrator)",
   },
   {
     title: "Cybersecurity Intern",
