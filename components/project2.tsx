@@ -1,180 +1,76 @@
-"use client"
-
+import React from "react"
 import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Trophy, Award, Star, Calendar, Users, Code, Zap } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-export default function AchievementsApp() {
-  const achievements = [
-    {
-      id: 1,
-      title: "AWS Certified Solutions Architect",
-      description: "Professional level certification for designing distributed systems on AWS",
-      icon: Award,
-      date: "2023",
-      category: "Certification",
-      color: "text-orange-500",
-      bgColor: "bg-orange-500/10",
-    },
-    {
-      id: 2,
-      title: "Best Innovation Award",
-      description: "Recognized for developing an AI-powered customer service solution",
-      icon: Trophy,
-      date: "2023",
-      category: "Award",
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-500/10",
-    },
-    {
-      id: 3,
-      title: "Open Source Contributor",
-      description: "Contributed to 20+ open source projects with 500+ commits",
-      icon: Code,
-      date: "2022-2023",
-      category: "Contribution",
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
-    },
-    {
-      id: 4,
-      title: "Tech Lead Promotion",
-      description: "Promoted to Technical Lead, managing a team of 8 developers",
-      icon: Users,
-      date: "2022",
-      category: "Career",
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
-    },
-    {
-      id: 5,
-      title: "Hackathon Winner",
-      description: "First place in Global AI Hackathon with 200+ participants",
-      icon: Zap,
-      date: "2022",
-      category: "Competition",
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
-    },
-    {
-      id: 6,
-      title: "Google Developer Expert",
-      description: "Recognized as GDE for Web Technologies and Angular",
-      icon: Star,
-      date: "2021",
-      category: "Recognition",
-      color: "text-red-500",
-      bgColor: "bg-red-500/10",
-    },
-  ]
+export default function Project1() {
+  // Replace the demo image URL with your actual demo image path
+  const demoImage = "/port_scanner.gif"
 
-  const milestones = [
-    { metric: "Years Experience", value: "5+", icon: Calendar },
-    { metric: "Projects Delivered", value: "50+", icon: Trophy },
-    { metric: "Team Members Led", value: "15+", icon: Users },
-    { metric: "Technologies Mastered", value: "25+", icon: Code },
-  ]
-
-  const certifications = [
-    "AWS Solutions Architect Professional",
-    "Google Cloud Professional Developer",
-    "Microsoft Azure Developer Associate",
-    "Certified Kubernetes Administrator",
-    "MongoDB Certified Developer",
-    "React Developer Certification",
-  ]
+  // Link to the project repo or live demo
+  const projectLink = "https://github.com/adi8805/Port-Scanner"
 
   return (
-    <div className="h-full overflow-auto bg-background">
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold text-foreground">Achievements & Recognition</h1>
-          <p className="text-muted-foreground">Milestones and accomplishments throughout my career</p>
-        </div>
+    <div className="max-w-4xl mx-auto p-6 bg-card rounded-lg shadow-lg text-foreground">
+      <h1 className="text-4xl font-bold mb-6 border-b border-border pb-3">
+        Port Scanner Project
+      </h1>
 
-        {/* Key Milestones */}
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">Key Milestones</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {milestones.map((milestone, index) => (
-              <div key={index} className="text-center space-y-2">
-                <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                  <milestone.icon className="w-6 h-6 text-primary" />
-                </div>
-                <div className="text-2xl font-bold text-foreground">{milestone.value}</div>
-                <div className="text-sm text-muted-foreground">{milestone.metric}</div>
-              </div>
-            ))}
-          </div>
-        </Card>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-3">Motivation to Build This Project</h2>
+        <p className="leading-relaxed">
+        My personal motivation for creating this project was to showcase my skills during internship applications.
 
-        {/* Achievements Timeline */}
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">Recent Achievements</h3>
-          <div className="space-y-4">
-            {achievements.map((achievement) => (
-              <div key={achievement.id} className="flex gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                <div
-                  className={`w-12 h-12 rounded-full ${achievement.bgColor} flex items-center justify-center flex-shrink-0`}
-                >
-                  <achievement.icon className={`w-6 h-6 ${achievement.color}`} />
-                </div>
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground">{achievement.title}</h4>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        {achievement.category}
-                      </Badge>
-                      <span className="text-sm text-muted-foreground">{achievement.date}</span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{achievement.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+While tools like Nmap are reliable, I often found them too slow for quick scanning. On the other hand, RustScan is blazing fast but often too aggressive for certain environments.
+So, I decided to build my own port scanner — one that balances speed and control by leveraging multi-threading and processor power efficiently.
+        </p>
+      </section>
 
-        {/* Certifications */}
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">Certifications & Credentials</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {certifications.map((cert, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Award className="w-4 h-4 text-primary" />
-                </div>
-                <span className="text-sm font-medium text-foreground">{cert}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-3">What I Created</h2>
+        <p className="leading-relaxed mb-4">
+        I built a high-performance Python-based port scanner that can:
 
-        {/* Skills Progress */}
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">Professional Growth</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Leadership & Management</span>
-              <span className="text-sm text-muted-foreground">Advanced</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">System Architecture</span>
-              <span className="text-sm text-muted-foreground">Expert</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Cloud Technologies</span>
-              <span className="text-sm text-muted-foreground">Advanced</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">AI/ML Integration</span>
-              <span className="text-sm text-muted-foreground">Intermediate</span>
-            </div>
-          </div>
+Scan ports quickly using multi-threading.
+
+Allow customization with command-line arguments.
+
+Provide real-time progress feedback with a responsive spinner animation.
+
+Run lightweight and efficiently on almost any system.
+        </p>
+
+        <h3 className="text-xl font-semibold mb-2">Technologies I Used</h3>
+        <ul className="list-disc list-inside leading-relaxed space-y-1">
+          <li>Python 3</li>
+          <li>socket – for network communication and checking if ports are open.</li>
+          <li>concurrent.futures – to run multiple scan tasks in parallel (multi-threading).</li>
+          <li>argparse – to handle command-line arguments easily.</li>
+          <li>sys – for system-level interactions (exit handling, error printing, etc.).</li>
+          <li>time – for managing delays and timing operations.</li>
+          <li>threading – for non-blocking animations (spinner during scanning).</li>
+        </ul>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-3">Demo</h2>
+        <Card className="overflow-hidden rounded-lg shadow-md">
+          <img
+            src={demoImage}
+            alt="Port Scanner demo screenshot"
+            className="w-full object-cover"
+          />
         </Card>
-      </div>
+      </section>
+
+      <section>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => window.open(projectLink, "_blank", "noopener,noreferrer")}
+        >
+          View Project Link
+        </Button>
+      </section>
     </div>
   )
 }
