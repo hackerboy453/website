@@ -13,6 +13,8 @@ import Contact from "@/components/Contact"
 import Experience from "@/components/Experience"
 import Skills from "@/components/Skills"
 import Terminal from "@/components/Terminal"
+import { useTheme } from "@/components/theme-provider"
+import { Sun, Moon } from "lucide-react"
 
 interface Window {
   id: string
@@ -63,16 +65,24 @@ export default function Desktop() {
     return () => clearInterval(timer)
   }, [])
 
+  useEffect(() => {
+    const handler = () => openWindow("personalize")
+    window.addEventListener("open-personalize-window", handler)
+    return () => window.removeEventListener("open-personalize-window", handler)
+  }, [windows])
+
   const desktopIcons = [
     { id: "bio", name: "About Me", image: "/icons/download.jpg" },
     { id: "projects", name: "Projects", image: "/icons/project.jpg" },
     { id: "achievements", name: "Achievements", image: "/icons/achievements.jpg" },
     { id: "contact", name: "Contact", image: "/icons/contacts.jpg" },
     { id: "terminal", name: "Terminal", image: "/icons/terminal.jpg" },
+    { id: "about", name: "About Portfolio OS", image: "/icons/settings.jpg" },
     // { id: "settings", name: "Settings", image: "/icons/settings.jpg" },
     { id: "experience", name: "Experience", image: "/icons/experince.jpg" },
     { id: "skills", name: "Skills", image: "/icons/skills.jpg" },
     { id: "certificate", name: "Certificate", image: "/icons/certificate.jpg" },
+    { id: "personalize", name: "Personalize", image: "/icons/settings.jpg" },
   ]
 
   const playSound = (type: "click" | "open" | "close" | "minimize" | "drag" | "drop") => {
@@ -295,6 +305,18 @@ export default function Desktop() {
       case "experience": return <Experience />
       case "skills": return <Skills />
       case "certificate": return <Certificate />
+      case "about":
+        return (
+          <div className="p-6 text-base text-foreground">
+            <h2 className="text-2xl font-bold mb-2">About Portfolio OS</h2>
+            <p className="mb-2">Portfolio OS is a personal desktop-inspired portfolio system, designed for a unique and interactive experience.</p>
+            <p className="mb-2">Version: <span className="font-semibold">v1.3</span></p>
+            <p className="mb-2">Changelog: Android optimization, improved mobile touch support, and enhanced theme controls.</p>
+            <p className="mb-2">Created by Adi. All rights reserved.</p>
+          </div>
+        )
+      case "personalize":
+        return <PersonalizeWindow />
       default: return <div className="p-4">Window content</div>
     }
   }
@@ -442,11 +464,54 @@ export default function Desktop() {
                 {window.title}
               </Button>
             ))}
+            {/* Theme Toggle Button */}
+            <ThemeToggleButton />
           </div>
           <div className="flex items-center space-x-4 text-sm text-muted-foreground">
             <span>{time.toLocaleTimeString()}</span>
             <span>{time.toLocaleDateString()}</span>
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ThemeToggleButton() {
+  const { theme, toggleTheme } = useTheme()
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="w-10 h-10 p-0 flex items-center justify-center"
+      aria-label="Toggle theme"
+      onClick={toggleTheme}
+    >
+      {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+    </Button>
+  )
+}
+
+function PersonalizeWindow() {
+  const { theme, toggleTheme } = useTheme()
+  return (
+    <div className="p-6 text-base text-foreground">
+      <h2 className="text-2xl font-bold mb-4">Personalize</h2>
+      <div className="flex flex-col gap-4">
+        <span className="font-medium">Theme:</span>
+        <div className="flex gap-4">
+          <button
+            className={`px-4 py-2 rounded border ${theme === "light" ? "bg-primary text-white" : "bg-card text-foreground"}`}
+            onClick={() => { if (theme !== "light") toggleTheme() }}
+          >
+            Light
+          </button>
+          <button
+            className={`px-4 py-2 rounded border ${theme === "dark" ? "bg-primary text-white" : "bg-card text-foreground"}`}
+            onClick={() => { if (theme !== "dark") toggleTheme() }}
+          >
+            Dark
+          </button>
         </div>
       </div>
     </div>

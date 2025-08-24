@@ -14,8 +14,10 @@ interface ContextMenuProps {
 export default function ContextMenu({ x, y, onClose }: ContextMenuProps) {
   const menuItems = [
     { icon: RefreshCw, label: "Refresh", action: () => window.location.reload() },
-    { icon: Palette, label: "Personalize", action: () => console.log("Personalize") },
-    { icon: Settings, label: "Display Settings", action: () => console.log("Display Settings") },
+    { icon: Palette, label: "Personalize", action: () => {
+      window.dispatchEvent(new CustomEvent("open-personalize-window"))
+    } },
+    // { icon: Settings, label: "Display Settings", action: () => console.log("Display Settings") },
     { icon: Info, label: "About PortfolioOS", action: () => console.log("About") },
   ]
 
