@@ -44,19 +44,19 @@ export default function BioApp() {
         </div>
 
         {/* Education Section */}
-        <Card className="p-4">
-          <h3 className="text-lg font-bold mb-3 tracking-widest text-gray-800 flex items-center">
+        <Card className="p-4 bg-card">
+          <h3 className="text-lg font-bold mb-3 tracking-widest text-foreground flex items-center">
             <span className="inline-block w-3 h-3 mr-2 rounded-sm bg-primary"></span>
             EDUCATION
           </h3>
           <div className="pl-4 space-y-4">
             <div>
-              <div className="font-bold leading-tight uppercase">• Class 12th with PCMB with Physical Education</div>
-              <div className="text-gray-700">Govt Sarvodaya Boys SSS Radhey Sham Park DL</div>
+              <div className="font-bold leading-tight uppercase text-foreground">• Class 12th with PCMB with Physical Education</div>
+              <div className="text-muted-foreground">Govt Sarvodaya Boys SSS Radhey Sham Park DL</div>
             </div>
             <div>
-              <div className="font-bold leading-tight uppercase">• Pursuing BCA from IP University</div>
-              <div className="text-gray-700">
+              <div className="font-bold leading-tight uppercase text-foreground">• Pursuing BCA from IP University</div>
+              <div className="text-muted-foreground">
                 Sri Guru Tegh Bahadur Institute of Management &amp; IT
               </div>
             </div>
@@ -64,19 +64,14 @@ export default function BioApp() {
         </Card>
 
         {/* Personal Interests */}
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">When I'm Not Coding</h3>
+        <Card className="p-4 bg-card">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">When I'm Not Coding</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
             <div className="space-y-2">
               <p>📚Read Non-Fiction books</p>
               <p>🎮 Play Triple A and Esports Video games</p>
               <p>🏃‍♂️ GYM</p>
             </div>
-            {/* <div className="space-y-2">
-              <p>📷 Photography and digital art</p>
-              <p>🍳 Experimenting with new recipes</p>
-              <p>🎮 Gaming and VR experiences</p>
-            </div> */}
           </div>
         </Card>
       </div>

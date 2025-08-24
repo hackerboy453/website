@@ -20,26 +20,26 @@ const experience = [
 
 export default function Experience() {
   return (
-    <Card className="p-8 bg-white rounded-2xl shadow-sm">
-      <h3 className="text-2xl font-semibold mb-8 text-gray-800">Work Experience</h3>
+    <Card className="p-8 bg-card rounded-2xl shadow-sm">
+      <h3 className="text-2xl font-semibold mb-8 text-foreground">Work Experience</h3>
       <div className="space-y-10">
         {experience.map((job, idx) => (
           <div
             key={idx}
-            className="relative pl-8 border-l-2 border-gray-300 last:border-l-0"
+            className="relative pl-8 border-l-2 border-border last:border-l-0"
           >
             {/* Dot */}
             <div
-              className="absolute -left-2 top-2 w-4 h-4 bg-sky-500 rounded-full border-4 border-white"
+              className="absolute -left-2 top-2 w-4 h-4 bg-sky-500 rounded-full border-4 border-card"
               style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.09)" }}
             />
             <div>
-              <h4 className="font-semibold text-gray-800 text-lg">{job.title}</h4>
-              <div className="text-sky-700 font-bold text-base leading-normal">
+              <h4 className="font-semibold text-foreground text-lg">{job.title}</h4>
+              <div className="text-primary font-bold text-base leading-normal">
                 {job.company}
               </div>
-              <div className="text-gray-500 text-sm mb-2">{job.period}</div>
-              <div className="text-gray-700 text-base">{job.description}</div>
+              <div className="text-muted-foreground text-sm mb-2">{job.period}</div>
+              <div className="text-foreground text-base">{job.description}</div>
             </div>
           </div>
         ))}
