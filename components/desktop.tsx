@@ -127,6 +127,56 @@ export default function Desktop() {
     window.addEventListener("mouseup", handleMouseUp)
   }
 
+  // Touch drag support
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!draggedWindowRef.current) return
+      const windowId = draggedWindowRef.current
+      const offset = dragOffsetRef.current
+      const touch = e.touches[0]
+      if (!touch) return
+      const newX = touch.clientX - offset.x
+      const newY = touch.clientY - offset.y
+      setWindows(prev =>
+        prev.map(w =>
+          w.id === windowId
+            ? { ...w, position: { x: newX, y: newY } }
+            : w,
+        ),
+      )
+    },
+    [],
+  )
+
+  const handleTouchEnd = useCallback(() => {
+    if (draggedWindowRef.current) {
+      playSound("drop")
+      draggedWindowRef.current = null
+      dragOffsetRef.current = { x: 0, y: 0 }
+      document.body.style.userSelect = ""
+      window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleTouchEnd)
+    }
+  }, [handleTouchMove])
+
+  const handleTouchStart = (e: React.TouchEvent, windowId: string) => {
+    if ((e.target as HTMLElement).closest(".window-controls")) return
+    const win = windows.find(w => w.id === windowId)
+    if (!win) return
+    const touch = e.touches[0]
+    if (!touch) return
+    draggedWindowRef.current = windowId
+    dragOffsetRef.current = {
+      x: touch.clientX - win.position.x,
+      y: touch.clientY - win.position.y,
+    }
+    setActiveWindow(windowId)
+    playSound("drag")
+    document.body.style.userSelect = "none"
+    window.addEventListener("touchmove", handleTouchMove, { passive: false })
+    window.addEventListener("touchend", handleTouchEnd)
+  }
+
   function getNewWindowPosition(iconId: string): { x: number; y: number } {
     if (windows.length === 0) {
       return { x: START_POS_X, y: START_POS_Y }
@@ -250,7 +300,7 @@ export default function Desktop() {
   }
 
   // Arrange icons in columns
-  const iconColumns: typeof desktopIcons[][] = []
+  const iconColumns: { id: string; name: string; image: string }[][] = []
   for (let i = 0; i < desktopIcons.length; i += ICONS_PER_COLUMN) {
     iconColumns.push(desktopIcons.slice(i, i + ICONS_PER_COLUMN))
   }
@@ -322,42 +372,43 @@ export default function Desktop() {
           >
             {/* Window Title Bar */}
             <div
-              className="flex items-center justify-between p-2 bg-primary/10 border-b border-border rounded-t-lg cursor-grab active:cursor-grabbing"
+              className="flex items-center justify-between p-4 bg-primary/10 border-b border-border rounded-t-lg cursor-grab active:cursor-grabbing min-h-[48px]"
               onMouseDown={e => handleMouseDown(e, window.id)}
+              onTouchStart={e => handleTouchStart(e, window.id)}
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <div
-                  className="w-3 h-3 bg-red-500 rounded-full hover:bg-red-600 cursor-pointer"
+                  className="w-6 h-6 bg-red-500 rounded-full hover:bg-red-600 cursor-pointer flex items-center justify-center"
                   onClick={e => {
                     e.stopPropagation()
                     closeWindow(window.id)
                   }}
                 />
                 <div
-                  className="w-3 h-3 bg-yellow-500 rounded-full hover:bg-yellow-600 cursor-pointer"
+                  className="w-6 h-6 bg-yellow-500 rounded-full hover:bg-yellow-600 cursor-pointer flex items-center justify-center"
                   onClick={e => {
                     e.stopPropagation()
                     minimizeWindow(window.id)
                   }}
                 />
                 <div
-                  className="w-3 h-3 bg-green-500 rounded-full hover:bg-green-600 cursor-pointer"
+                  className="w-6 h-6 bg-green-500 rounded-full hover:bg-green-600 cursor-pointer flex items-center justify-center"
                   onClick={e => {
                     e.stopPropagation()
                     maximizeWindow(window.id)
                   }}
                 />
-                <span className="text-sm font-medium ml-2 select-none">{window.title}</span>
+                <span className="text-base font-medium ml-3 select-none">{window.title}</span>
               </div>
-              <div className="flex items-center space-x-1 window-controls">
-                <Button variant="ghost" size="sm" className="w-6 h-6 p-0 hover:bg-muted/50" onClick={e => { e.stopPropagation(); minimizeWindow(window.id) }}>
-                  <Minus className="w-3 h-3" />
+              <div className="flex items-center space-x-2 window-controls">
+                <Button variant="ghost" size="icon" className="w-8 h-8 p-0 hover:bg-muted/50" onClick={e => { e.stopPropagation(); minimizeWindow(window.id) }}>
+                  <Minus className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="sm" className="w-6 h-6 p-0 hover:bg-muted/50" onClick={e => { e.stopPropagation(); maximizeWindow(window.id) }}>
-                  <Square className="w-3 h-3" />
+                <Button variant="ghost" size="icon" className="w-8 h-8 p-0 hover:bg-muted/50" onClick={e => { e.stopPropagation(); maximizeWindow(window.id) }}>
+                  <Square className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="sm" className="w-6 h-6 p-0 hover:bg-destructive/20" onClick={e => { e.stopPropagation(); closeWindow(window.id) }}>
-                  <X className="w-3 h-3" />
+                <Button variant="ghost" size="icon" className="w-8 h-8 p-0 hover:bg-destructive/20" onClick={e => { e.stopPropagation(); closeWindow(window.id) }}>
+                  <X className="w-5 h-5" />
                 </Button>
               </div>
             </div>
