@@ -72,7 +72,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
           </div>
 
           {/* OS Name */}
-          <h1 className="text-2xl font-bold text-primary">PortfolioOS</h1>
+          <h1 className="text-2xl font-bold text-primary">Adi OS</h1>
 
           {/* Boot Steps */}
           <div className="space-y-2">
