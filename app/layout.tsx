@@ -7,8 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   title: 'Adi Bio',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  description: 'Created by Adi',
+  generator: 'By Adi',
 }
 
 export default function RootLayout({

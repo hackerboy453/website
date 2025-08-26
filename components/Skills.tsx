@@ -2,12 +2,11 @@
 
 import React from "react"
 import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Award, Trophy, Code, Users, Zap, Star } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { useTheme } from "@/components/theme-provider"
 
 export default function Skills() {
+  const { theme } = useTheme ? useTheme() : { theme: "light" }
   const skillsData = [
     {
       field: "Programming & Scripting",
@@ -89,44 +88,52 @@ export default function Skills() {
   ]
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 space-y-2 overflow-y-auto">
-      <h2 className="text-3xl font-bold mb-1 text-center underline decoration-indigo-500 decoration-2 font-[cursive]">
+    <div className="w-full h-full max-h-full p-2 md:p-4 flex flex-col overflow-x-hidden">
+      <h2 className="text-3xl font-bold mb-1 text-center underline decoration-indigo-500 decoration-2 font-[cursive] text-foreground">
         Technical Skills
       </h2>
       <p className="text-center text-lg font-semibold mb-8 text-muted-foreground">
         7 Years of experience since 2018
       </p>
-
-      {skillsData.map(({ field, subfields, bgImage }) => (
-        <Card
-          key={field}
-          className="relative overflow-hidden w-full max-w-full min-h-[320px] mb-8"
-          style={{
-            backgroundImage: `url(${bgImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          {/* Overlay for readability */}
-          <div className="absolute inset-0 bg-black/50 pointer-events-none" />
-
-          <div className="relative p-6">
-            <h3 className="text-xl font-semibold mb-6 tracking-wide text-white">{field}</h3>
-            <div className="space-y-6">
-              {subfields.map((skill) => (
-                <div key={skill.name}>
-                  <div className="flex justify-between items-center mb-1 text-sm text-white">
-                    <span className="font-medium">{skill.name}</span>
-                    <span className="font-mono">{skill.level}%</span>
-                  </div>
-                  <Progress value={skill.level} className="h-2" />
-                </div>
-              ))}
+      <div className="flex flex-col items-center gap-8">
+        {skillsData.map(({ field, subfields, bgImage }) => (
+          <Card
+            key={field}
+            className="relative overflow-hidden w-full max-w-2xl min-h-[350px] bg-card border-border rounded-xl shadow-2xl"
+          >
+            {/* Background Image and Overlay Container */}
+            <div className="absolute inset-0 z-0">
+              <img
+                src={bgImage}
+                alt={`${field} background`}
+                className="w-full h-full object-cover"
+                onError={e => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = 'https://placehold.co/600x400/1a202c/ffffff?text=Image+Error';
+                }}
+              />
+              {/* Theme-aware Overlay */}
+              <div className={`absolute inset-0 ${theme === "dark" ? "bg-black/50" : "bg-white/60"} pointer-events-none`} />
             </div>
-          </div>
-        </Card>
-      ))}
+            {/* Content Container */}
+            <div className="relative z-10 flex flex-col justify-end h-full p-6">
+              <h3 className="text-2xl font-bold mb-4 tracking-wide text-foreground">{field}</h3>
+              <div className="space-y-4">
+                {subfields.map((skill) => (
+                  <div key={skill.name}>
+                    <div className="flex justify-between items-center mb-1 text-sm text-muted-foreground">
+                      <span className="font-medium break-words max-w-[60%]">{skill.name}</span>
+                      <span className="font-mono text-primary">{skill.level}%</span>
+                    </div>
+                    <Progress value={skill.level} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }
