@@ -12,7 +12,7 @@ export default function BioApp() {
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <div className="flex-shrink-0">
             <img
-              src="/person.png"
+              src="/person2.png"
               alt="Profile Picture"
               className="w-30 h-30 rounded-full border-4 border-primary/20"
             />
