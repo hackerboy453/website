@@ -1,12 +1,34 @@
 "use client"
 
 import React from "react"
-import { Card } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { useTheme } from "@/components/theme-provider"
 
-export default function Skills() {
-  const { theme } = useTheme ? useTheme() : { theme: "light" }
+// Mock components for Card and Progress since the originals are not available.
+// In your actual project, you would import these from your UI library.
+const Card = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={`bg-white text-gray-900 border border-gray-200 rounded-lg shadow-sm ${className}`}
+    {...props}
+  />
+));
+Card.displayName = 'Card';
+
+const Progress = ({ className, value, ...props }) => {
+  return (
+    <div
+      className={`relative h-2 w-full overflow-hidden rounded-full bg-gray-200 ${className}`}
+      {...props}
+    >
+      <div
+        className="h-full w-full flex-1 bg-indigo-600 transition-all"
+        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+      />
+    </div>
+  );
+};
+
+
+export default function App() {
   const skillsData = [
     {
       field: "Programming & Scripting",
@@ -88,53 +110,56 @@ export default function Skills() {
   ]
 
   return (
-    <div className="w-full h-full max-h-full p-2 md:p-4 flex flex-col overflow-x-hidden">
-      <h2 className="text-3xl font-bold mb-1 text-center underline decoration-indigo-500 decoration-2 font-[cursive] text-foreground">
-        Technical Skills
-      </h2>
-      <p className="text-center text-lg font-semibold mb-8 text-muted-foreground">
-        7 Years of experience since 2018
-      </p>
-      <div className="flex flex-col items-center gap-8">
-        {skillsData.map(({ field, subfields, bgImage }) => (
-          <Card
-            key={field}
-            className="relative overflow-hidden w-full max-w-2xl min-h-[350px] bg-card border-border rounded-xl shadow-2xl"
-          >
-            {/* Background Image and Overlay Container */}
-            <div className="absolute inset-0 z-0">
-              <img
-                src={bgImage}
-                alt={`${field} background`}
-                className="w-full h-full object-cover"
-                onError={e => {
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null;
-                  target.src = 'https://placehold.co/600x400/1a202c/ffffff?text=Image+Error';
-                }}
-              />
-              {/* Theme-aware Overlay */}
-              <div className={`absolute inset-0 ${theme === "dark" ? "bg-black/50" : "bg-white/60"} pointer-events-none`} />
-            </div>
-            {/* Content Container */}
-            <div className="relative z-10 flex flex-col justify-end h-full p-6">
-              <h3 className="text-2xl font-bold mb-4 tracking-wide text-foreground">{field}</h3>
-              <div className="space-y-4">
-                {subfields.map((skill) => (
-                  <div key={skill.name}>
-                    <div className="flex justify-between items-center mb-1 text-sm text-muted-foreground">
-                      <span className="font-medium break-words max-w-[60%]">{skill.name}</span>
-                      <span className="font-mono text-primary">{skill.level}%</span>
-                    </div>
-                    <Progress value={skill.level} />
-                  </div>
-                ))}
+    <div className="bg-gray-900 text-white min-h-screen font-sans">
+      <div className="w-full h-full max-w-3xl mx-auto p-4 md:p-8">
+        <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-2">
+                Technical Skills
+            </h2>
+            <div className="w-24 h-1 bg-indigo-500 mx-auto mb-4"></div>
+            <p className="text-lg font-light text-gray-400">
+                7 Years of experience since 2018
+            </p>
+        </div>
+
+        {/* Changed from a grid to a flex column for a vertical layout */}
+        <div className="flex flex-col items-center gap-8">
+          {skillsData.map(({ field, subfields, bgImage }) => (
+            <Card
+              key={field}
+              className="relative overflow-hidden w-full max-w-2xl min-h-[350px] bg-gray-800 border-gray-700 rounded-xl shadow-2xl transform hover:scale-105 transition-transform duration-300"
+            >
+              {/* Background Image and Overlay Container */}
+              <div className="absolute inset-0 z-0">
+                <img
+                  src={bgImage}
+                  alt={`${field} background`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/600x400/1a202c/ffffff?text=Image+Error'; }}
+                />
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent" />
               </div>
-            </div>
-          </Card>
-        ))}
+
+              {/* Content Container */}
+              <div className="relative z-10 flex flex-col justify-end h-full p-6">
+                <h3 className="text-2xl font-bold mb-4 tracking-wide text-white">{field}</h3>
+                <div className="space-y-4">
+                  {subfields.map((skill) => (
+                    <div key={skill.name}>
+                      <div className="flex justify-between items-center mb-1 text-sm text-gray-300">
+                        <span className="font-medium">{skill.name}</span>
+                        <span className="font-mono text-indigo-400">{skill.level}%</span>
+                      </div>
+                      <Progress value={skill.level} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   )
 }
- 
