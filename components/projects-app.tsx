@@ -9,6 +9,10 @@ import Project5 from "@/components/project5"
 import Project6 from "@/components/project6"
 import Project7 from "@/components/project7"
 import Project8 from "@/components/project8"
+import Project9 from "@/components/project9"
+import Project10 from "@/components/project10"
+import Project11 from "@/components/project11"
+import Project12 from "@/components/project12"
 
 // Background images for categories
 const categoryBackgrounds: Record<string, string> = {
@@ -28,12 +32,17 @@ const projectCategories = [
     projects: [
       { id: "wifi-automate", title: "Automate WiFi Hacking Process" }, // Project1
       { id: "port-scanner", title: "Port Scanner" }, // Project2
+      { id: "keylogger", title: "Offline Keylogger" }, // Project9, corrected id to lowercase
+      // { id: "Antivirus", title: "Open Source Antivirus With Firewall & Vulnerability Scanner" },
+      { id: "Online_keylogger", title: "Online Keylogger" },
     ],
   },
   {
     id: "webdev",
     name: "Web Development Projects",
-    projects: [{ id: "hack-secure", title: "Hack Secure Website" }], // Project3
+    projects: [{ id: "hack-secure", title: "Hack Secure Website" },
+      { id: "QR-code", title: "QR Code Generator With Analytics" },
+    ], // Project3
   },
   {
     id: "machinelearning",
@@ -77,6 +86,10 @@ const internalProjects: Record<string, React.ReactNode> = {
   "oreilly": <Project6 />,
   "libgen": <Project7 />,
   "books-to-json": <Project8 />,
+  "keylogger": <Project9 />,
+  "Online_keylogger": <Project10 />,
+  "Antivirus": <Project11 />,
+  "QR-code": <Project12 />,
 }
 
 export default function ProjectsApp() {
@@ -96,7 +109,12 @@ export default function ProjectsApp() {
         <Button variant="ghost" className="mb-6" onClick={() => setActiveProjectKey(null)}>
           &larr; Back to Projects
         </Button>
-        <div className="bg-card p-6 rounded-lg">{internalProjects[activeProjectKey]}</div>
+        <div
+          className="bg-card p-6 rounded-lg max-h-[80vh] overflow-auto"
+          style={{ minHeight: "300px" }}
+        >
+          {internalProjects[activeProjectKey]}
+        </div>
       </div>
     )
   }
@@ -137,7 +155,11 @@ export default function ProjectsApp() {
                     {category.projects.map((proj) => (
                       <li key={proj.id} className="flex justify-between items-center">
                         <span>{proj.title}</span>
-                        <Button size="sm" onClick={() => openProject(proj.id)} disabled={category.message === "unavailable"}>
+                        <Button
+                          size="sm"
+                          onClick={() => openProject(proj.id)}
+                          disabled={false}
+                        >
                           View Project
                         </Button>
                       </li>
@@ -168,18 +190,26 @@ export default function ProjectsApp() {
               >
                 <div className="absolute inset-0 bg-black/50 pointer-events-none rounded-lg"></div>
 
-                <h2 className="relative text-xl font-semibold border-b border-border pb-2 z-10">{category.name}</h2>
+                <h2 className="relative text-xl font-semibold border-b border-border pb-2 z-10">
+                  {category.name}
+                </h2>
                 {category.projects.length > 0 ? (
                   <ul className="relative z-10 space-y-3">
                     {category.projects.map((proj) => (
                       <li
                         key={proj.id}
-                        className={`flex items-center${catId !== "unreal" ? " justify-between" : ""}`}
+                        className={`flex items-center ${
+                          catId !== "unreal" ? "justify-between" : ""
+                        }`}
                       >
                         <span>{proj.title}</span>
-                        {catId !== "unreal" && (
-                          <Button size="sm" onClick={() => openProject(proj.id)} disabled={category.message === "unavailable"}>
+                        {catId !== "unreal" ? (
+                          <Button size="sm" onClick={() => openProject(proj.id)} disabled={false}>
                             View Project
+                          </Button>
+                        ) : (
+                          <Button size="sm" disabled>
+                            Unavailable
                           </Button>
                         )}
                       </li>
