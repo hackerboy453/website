@@ -25,7 +25,7 @@ const socialLinks = [
   {
     id: "instagram",
     label: "Instagram",
-    url: "https://www.instagram.com/epicgamesaga/",
+    url: "https://www.instagram.com/mastmolakaamchor/",
     icon: <FaInstagram size={28} />,
     buttonText: "Follow on Instagram",
     img: "/instagram.jpg",
