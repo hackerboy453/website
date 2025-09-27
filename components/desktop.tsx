@@ -40,15 +40,28 @@ const WINDOWS_PER_ROW = 3
 
 const FOLDER_ALIASES: Record<string, string> = {
   "about me": "bio",
-  "bio": "bio",
-  "projects": "projects",
-  "achievements": "achievements",
-  "experience": "experience",
-  "skills": "skills",
-  "certificate": "certificate",
-  "contact": "contact",
-  "terminal": "terminal",
+  bio: "bio",
+  projects: "projects",
+  achievements: "achievements",
+  experience: "experience",
+  skills: "skills",
+  certificate: "certificate",
+  contact: "contact",
+  terminal: "terminal",
 }
+
+// Ensure your wallpaper files are in the /public folder
+const wallpapers = [
+  "/wallpaper/wallpaper1.png",
+  "/wallpaper/wallpaper2.png",
+  "/wallpaper/wallpaper3.png",
+  "/wallpaper/wallpaper4.png",
+  "/wallpaper/wallpaper5.png",
+  "/wallpaper/wallpaper6.png",
+  "/wallpaper/wallpaper7.png",
+  "/wallpaper/wallpaper8.png",
+  "/wallpaper/wallpaper9.png",
+]
 
 export default function Desktop() {
   const [time, setTime] = useState(new Date())
@@ -56,6 +69,7 @@ export default function Desktop() {
   const [activeWindow, setActiveWindow] = useState<string | null>(null)
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; show: boolean }>({ x: 0, y: 0, show: false })
   const [isLoading, setIsLoading] = useState<string | null>(null)
+  const [currentWallpaper, setCurrentWallpaper] = useState<string>("")
 
   const draggedWindowRef = useRef<string | null>(null)
   const dragOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
@@ -63,6 +77,37 @@ export default function Desktop() {
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000)
     return () => clearInterval(timer)
+  }, [])
+
+  // Handle window resize to reposition windows that might be outside new boundaries
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindows(prev => prev.map(window => {
+        const constrainedPosition = constrainWindowPosition(
+          window.position.x, 
+          window.position.y, 
+          window.size.width, 
+          window.size.height
+        )
+        return { ...window, position: constrainedPosition }
+      }))
+    }
+
+    window.addEventListener('resize', handleWindowResize)
+    return () => window.removeEventListener('resize', handleWindowResize)
+  }, [])
+
+  useEffect(() => {
+    const initialWallpaper = wallpapers[Math.floor(Math.random() * wallpapers.length)]
+    setCurrentWallpaper(initialWallpaper)
+    const wallpaperInterval = setInterval(() => {
+      setCurrentWallpaper(prevWallpaper => {
+        const currentIndex = wallpapers.indexOf(prevWallpaper)
+        const nextIndex = (currentIndex + 1) % wallpapers.length
+        return wallpapers[nextIndex]
+      })
+    }, 30000)
+    return () => clearInterval(wallpaperInterval)
   }, [])
 
   useEffect(() => {
@@ -78,7 +123,6 @@ export default function Desktop() {
     { id: "contact", name: "Contact", image: "/icons/contacts.jpg" },
     { id: "terminal", name: "Terminal", image: "/icons/terminal.jpg" },
     { id: "about", name: "About Portfolio OS", image: "/icons/settings.jpg" },
-    // { id: "settings", name: "Settings", image: "/icons/settings.jpg" },
     { id: "experience", name: "Experience", image: "/icons/experince.jpg" },
     { id: "skills", name: "Skills", image: "/icons/skills.jpg" },
     { id: "certificate", name: "Certificate", image: "/icons/certificate.jpg" },
@@ -91,23 +135,67 @@ export default function Desktop() {
     audio.play().catch(() => {})
   }
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!draggedWindowRef.current) return
-      const windowId = draggedWindowRef.current
-      const offset = dragOffsetRef.current
-      const newX = e.clientX - offset.x
-      const newY = e.clientY - offset.y
-      setWindows(prev =>
-        prev.map(w =>
-          w.id === windowId
-            ? { ...w, position: { x: newX, y: newY } }
-            : w,
-        ),
+  // Helper function to constrain window position within screen boundaries
+  const constrainWindowPosition = (x: number, y: number, width: number, height: number) => {
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+    const taskbarHeight = 48 // Height of the bottom taskbar
+    const snapThreshold = 20 // Distance from edge to trigger snapping
+    
+    let constrainedX = x
+    let constrainedY = y
+    
+    // Snap to left edge
+    if (x < snapThreshold && x > -snapThreshold) {
+      constrainedX = 0
+    }
+    // Snap to right edge
+    else if (x > screenWidth - width - snapThreshold && x < screenWidth - width + snapThreshold) {
+      constrainedX = screenWidth - width
+    }
+    // Ensure window doesn't go off the left edge
+    else {
+      constrainedX = Math.max(0, Math.min(x, screenWidth - width))
+    }
+    
+    // Snap to top edge
+    if (y < snapThreshold && y > -snapThreshold) {
+      constrainedY = 0
+    }
+    // Snap to bottom edge (above taskbar)
+    else if (y > screenHeight - height - taskbarHeight - snapThreshold && y < screenHeight - height - taskbarHeight + snapThreshold) {
+      constrainedY = screenHeight - height - taskbarHeight
+    }
+    // Ensure window doesn't go off the top edge
+    else {
+      constrainedY = Math.max(0, Math.min(y, screenHeight - height - taskbarHeight))
+    }
+    
+    return { x: constrainedX, y: constrainedY }
+  }
+
+  // Mouse drag handlers
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!draggedWindowRef.current) return
+    const windowId = draggedWindowRef.current
+    const offset = dragOffsetRef.current
+    const newX = e.clientX - offset.x
+    const newY = e.clientY - offset.y
+    
+    setWindows(prev => {
+      const window = prev.find(w => w.id === windowId)
+      if (!window) return prev
+      
+      // Constrain the window position to stay within screen boundaries
+      const constrainedPosition = constrainWindowPosition(newX, newY, window.size.width, window.size.height)
+      
+      return prev.map(w => 
+        w.id === windowId 
+          ? { ...w, position: constrainedPosition } 
+          : w
       )
-    },
-    [],
-  )
+    })
+  }, [])
 
   const handleMouseUp = useCallback(() => {
     if (draggedWindowRef.current) {
@@ -124,12 +212,8 @@ export default function Desktop() {
     if ((e.target as HTMLElement).closest(".window-controls")) return
     const win = windows.find(w => w.id === windowId)
     if (!win) return
-
     draggedWindowRef.current = windowId
-    dragOffsetRef.current = {
-      x: e.clientX - win.position.x,
-      y: e.clientY - win.position.y,
-    }
+    dragOffsetRef.current = { x: e.clientX - win.position.x, y: e.clientY - win.position.y }
     setActiveWindow(windowId)
     playSound("drag")
     document.body.style.userSelect = "none"
@@ -137,26 +221,30 @@ export default function Desktop() {
     window.addEventListener("mouseup", handleMouseUp)
   }
 
-  // Touch drag support
-  const handleTouchMove = useCallback(
-    (e: TouchEvent) => {
-      if (!draggedWindowRef.current) return
-      const windowId = draggedWindowRef.current
-      const offset = dragOffsetRef.current
-      const touch = e.touches[0]
-      if (!touch) return
-      const newX = touch.clientX - offset.x
-      const newY = touch.clientY - offset.y
-      setWindows(prev =>
-        prev.map(w =>
-          w.id === windowId
-            ? { ...w, position: { x: newX, y: newY } }
-            : w,
-        ),
+  // Touch drag handlers
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (!draggedWindowRef.current) return
+    const windowId = draggedWindowRef.current
+    const offset = dragOffsetRef.current
+    const touch = e.touches[0]
+    if (!touch) return
+    const newX = touch.clientX - offset.x
+    const newY = touch.clientY - offset.y
+    
+    setWindows(prev => {
+      const window = prev.find(w => w.id === windowId)
+      if (!window) return prev
+      
+      // Constrain the window position to stay within screen boundaries
+      const constrainedPosition = constrainWindowPosition(newX, newY, window.size.width, window.size.height)
+      
+      return prev.map(w => 
+        w.id === windowId 
+          ? { ...w, position: constrainedPosition } 
+          : w
       )
-    },
-    [],
-  )
+    })
+  }, [])
 
   const handleTouchEnd = useCallback(() => {
     if (draggedWindowRef.current) {
@@ -176,10 +264,7 @@ export default function Desktop() {
     const touch = e.touches[0]
     if (!touch) return
     draggedWindowRef.current = windowId
-    dragOffsetRef.current = {
-      x: touch.clientX - win.position.x,
-      y: touch.clientY - win.position.y,
-    }
+    dragOffsetRef.current = { x: touch.clientX - win.position.x, y: touch.clientY - win.position.y }
     setActiveWindow(windowId)
     playSound("drag")
     document.body.style.userSelect = "none"
@@ -187,6 +272,7 @@ export default function Desktop() {
     window.addEventListener("touchend", handleTouchEnd)
   }
 
+  // Position calculation function
   function getNewWindowPosition(iconId: string): { x: number; y: number } {
     if (windows.length === 0) {
       return { x: START_POS_X, y: START_POS_Y }
@@ -200,20 +286,13 @@ export default function Desktop() {
     }
   }
 
-  // Prevent duplicate windows! If already open, focus/unminimize instead.
+  // Open window function
   const openWindow = async (iconId: string) => {
     const icon = desktopIcons.find(i => i.id === iconId)
     if (!icon) return
     const existing = windows.find(w => w.id === iconId)
     if (existing) {
-      // Unminimize if minimized
-      setWindows(prev =>
-        prev.map(w =>
-          w.id === iconId
-            ? { ...w, isMinimized: false }
-            : w
-        )
-      )
+      setWindows(prev => prev.map(w => (w.id === iconId ? { ...w, isMinimized: false } : w)))
       setActiveWindow(iconId)
       playSound("click")
       return
@@ -260,8 +339,8 @@ export default function Desktop() {
                 ? { ...DEFAULT_WINDOW_SIZE }
                 : { width: window.innerWidth, height: window.innerHeight - 48 },
             }
-          : w,
-      ),
+          : w
+      )
     )
   }
 
@@ -271,17 +350,17 @@ export default function Desktop() {
     setActiveWindow(windowId)
   }
 
-  const handleRightClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    setContextMenu({ x: e.clientX, y: e.clientY, show: true })
-  }
-
+  // The missing handleDesktopClick function that was causing ReferenceError
   const handleDesktopClick = () => {
     setContextMenu(prev => ({ ...prev, show: false }))
     setActiveWindow(null)
   }
 
-  // Used by Terminal for "open <folder>" support
+  const handleRightClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setContextMenu({ x: e.clientX, y: e.clientY, show: true })
+  }
+
   const handleTerminalOpenWindow = (folder: string) => {
     if (folder === "close-terminal") {
       closeWindow("terminal")
@@ -300,8 +379,7 @@ export default function Desktop() {
       case "projects": return <ProjectsApp />
       case "achievements": return <AchievementsApp />
       case "contact": return <Contact />
-      case "terminal":
-        return <Terminal onOpenWindow={handleTerminalOpenWindow} />
+      case "terminal": return <Terminal onOpenWindow={handleTerminalOpenWindow} />
       case "experience": return <Experience />
       case "skills": return <Skills />
       case "certificate": return <Certificate />
@@ -315,13 +393,11 @@ export default function Desktop() {
             <p className="mb-2">Created by Adi. All rights reserved.</p>
           </div>
         )
-      case "personalize":
-        return <PersonalizeWindow />
+      case "personalize": return <PersonalizeWindow />
       default: return <div className="p-4">Window content</div>
     }
   }
 
-  // Arrange icons in columns
   const iconColumns: { id: string; name: string; image: string }[][] = []
   for (let i = 0; i < desktopIcons.length; i += ICONS_PER_COLUMN) {
     iconColumns.push(desktopIcons.slice(i, i + ICONS_PER_COLUMN))
@@ -329,20 +405,19 @@ export default function Desktop() {
 
   return (
     <div
-      className="h-screen w-full relative overflow-hidden select-none"
+      className="h-screen w-full relative overflow-hidden select-none pb-14"
       onClick={handleDesktopClick}
       onContextMenu={handleRightClick}
       style={{
-        backgroundImage: "url('/intp2.png')",
-        backgroundSize: "contain",
+        backgroundImage: `url('${currentWallpaper}')`,
+        backgroundSize: "100% 100%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundColor: "black",
+        transition: "background-image 1.5s ease-in-out",
       }}
     >
       <div className="absolute inset-0 bg-black/20"></div>
-
-      {/* Desktop Icons */}
       <div className="absolute top-8 left-4 flex flex-row items-start z-10">
         {iconColumns.map((column, colIdx) => (
           <div key={colIdx} className="flex flex-col items-center" style={{ marginRight: ICON_HORIZONTAL_GAP }}>
@@ -351,17 +426,11 @@ export default function Desktop() {
                 key={icon.id}
                 className="flex flex-col items-center space-y-2 cursor-pointer group relative mb-5"
                 style={{ marginBottom: rowIdx === column.length - 1 ? 0 : ICON_VERTICAL_GAP }}
-                onClick={e => {
-                  e.stopPropagation()
-                  openWindow(icon.id)
-                }}
+                onClick={e => { e.stopPropagation(); openWindow(icon.id) }}
               >
                 <Card className="w-16 h-16 flex items-center justify-center bg-card/90 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:bg-card/95 relative">
-                  {/* Icon Image */}
                   <img src={icon.image} alt={icon.name} className="w-10 h-10 object-contain" />
-                  {isLoading === icon.id && (
-                    <div className="absolute inset-0 bg-primary/20 rounded-lg animate-pulse"></div>
-                  )}
+                  {isLoading === icon.id && <div className="absolute inset-0 bg-primary/20 rounded-lg animate-pulse"></div>}
                 </Card>
                 <span className="text-xs text-center text-white/90 group-hover:text-white transition-colors duration-200 drop-shadow-lg">
                   {icon.name}
@@ -371,55 +440,30 @@ export default function Desktop() {
           </div>
         ))}
       </div>
-
-      {/* Windows */}
       {windows.map(window =>
         !window.isMinimized && (
           <div
             key={window.id}
-            className={`absolute bg-card border border-border rounded-lg shadow-2xl transition-all duration-300 ${
-              activeWindow === window.id ? "z-50 shadow-3xl" : "z-40"
-            } ${draggedWindowRef.current === window.id ? "cursor-grabbing" : "cursor-default"}`}
+            className={`absolute bg-card border border-border rounded-lg shadow-2xl transition-all duration-300 ${activeWindow === window.id ? "z-50 shadow-3xl" : "z-40"} ${draggedWindowRef.current === window.id ? "cursor-grabbing" : "cursor-default"}`}
             style={{
               left: window.position.x,
               top: window.position.y,
               width: window.size.width,
               height: window.size.height,
+              maxHeight: "calc(100vh - 56px)",
               transform: activeWindow === window.id ? "scale(1)" : "scale(0.98)",
             }}
-            onClick={e => {
-              e.stopPropagation()
-              setActiveWindow(window.id)
-            }}
+            onClick={e => { e.stopPropagation(); setActiveWindow(window.id) }}
           >
-            {/* Window Title Bar */}
             <div
               className="flex items-center justify-between p-4 bg-primary/10 border-b border-border rounded-t-lg cursor-grab active:cursor-grabbing min-h-[48px]"
               onMouseDown={e => handleMouseDown(e, window.id)}
               onTouchStart={e => handleTouchStart(e, window.id)}
             >
               <div className="flex items-center space-x-3">
-                <div
-                  className="w-6 h-6 bg-red-500 rounded-full hover:bg-red-600 cursor-pointer flex items-center justify-center"
-                  onClick={e => {
-                    e.stopPropagation()
-                    closeWindow(window.id)
-                  }}
-                />
-                <div
-                  className="w-6 h-6 bg-yellow-500 rounded-full hover:bg-yellow-600 cursor-pointer flex items-center justify-center"
-                  onClick={e => {
-                    e.stopPropagation()
-                    minimizeWindow(window.id)
-                  }}
-                />
-                <div
-                  className="w-6 h-6 bg-green-500 rounded-full hover:bg-green-600 cursor-pointer flex items-center justify-center"
-                  onClick={e => {
-                    e.stopPropagation()
-                    maximizeWindow(window.id)
-                  }}
-                />
+                <div className="w-6 h-6 bg-red-500 rounded-full hover:bg-red-600 cursor-pointer" onClick={e => { e.stopPropagation(); closeWindow(window.id) }} />
+                <div className="w-6 h-6 bg-yellow-500 rounded-full hover:bg-yellow-600 cursor-pointer" onClick={e => { e.stopPropagation(); minimizeWindow(window.id) }} />
+                <div className="w-6 h-6 bg-green-500 rounded-full hover:bg-green-600 cursor-pointer" onClick={e => { e.stopPropagation(); maximizeWindow(window.id) }} />
                 <span className="text-base font-medium ml-3 select-none">{window.title}</span>
               </div>
               <div className="flex items-center space-x-2 window-controls">
@@ -434,21 +478,14 @@ export default function Desktop() {
                 </Button>
               </div>
             </div>
-            <div className="h-full overflow-auto">{window.component}</div>
+            <div className="h-full max-h-full overflow-auto">{window.component}</div>
           </div>
         )
       )}
-
-      {contextMenu.show && (
-        <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={() => setContextMenu(prev => ({ ...prev, show: false }))} />
-      )}
-
-      {/* Taskbar */}
+      {contextMenu.show && <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={() => setContextMenu(prev => ({ ...prev, show: false }))} />}
       <div className="absolute bottom-0 left-0 right-0 h-12 bg-card/90 backdrop-blur-sm border-t border-border/50 z-50">
         <div className="flex items-center justify-between h-full px-4">
-          <Button variant="ghost" size="sm" className="text-primary font-semibold hover:bg-primary/10">
-            Adi OS
-          </Button>
+          <Button variant="ghost" size="sm" className="text-primary font-semibold hover:bg-primary/10">Adi OS</Button>
           <div className="flex items-center space-x-2">
             {windows.map(window => (
               <Button
@@ -457,18 +494,17 @@ export default function Desktop() {
                 size="sm"
                 className="text-xs hover:scale-105"
                 onClick={() => {
-                  if (window.isMinimized) restoreWindow(window.id)
-                  else setActiveWindow(window.id)
+                  if (window.isMinimized) restoreWindow(window.id);
+                  else setActiveWindow(window.id);
                 }}
               >
                 {window.title}
               </Button>
             ))}
-            {/* Theme Toggle Button */}
             <ThemeToggleButton />
           </div>
           <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-            <span>{time.toLocaleTimeString()}</span>
+            <span>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             <span>{time.toLocaleDateString()}</span>
           </div>
         </div>
