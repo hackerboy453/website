@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 export default function Project10() {
   // GitHub project link - update this to your repository
-  const projectLink = "https://github.com/your-username/qr-code-tracker"
+  const projectLink = "https://www.qranalyticshub.space/"
 
 
   return (
@@ -62,9 +62,10 @@ export default function Project10() {
           className="bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] transition-transform transition-colors duration-200"
           onClick={() => window.open(projectLink, "_blank", "noopener,noreferrer")}
         >
-          View Project Repository
+          View Website
         </Button>
       </section>
     </div>
   )
 }
+
