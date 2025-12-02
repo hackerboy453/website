@@ -13,6 +13,7 @@ import Project9 from "@/components/project9"
 import Project10 from "@/components/project10"
 import Project11 from "@/components/project11"
 import Project12 from "@/components/project12"
+import Project13 from "@/components/project13"
 
 // Background images for categories
 const categoryBackgrounds: Record<string, string> = {
@@ -35,6 +36,8 @@ const projectCategories = [
       { id: "keylogger", title: "Offline Keylogger" }, // Project9, corrected id to lowercase
       // { id: "Antivirus", title: "Open Source Antivirus With Firewall & Vulnerability Scanner" },
       { id: "Online_keylogger", title: "Online Keylogger" },
+      { id: "Quishing (QR Phishing)", title: "Quishing (QR Phishing)" },
+      { id: "Open Source Antivirus With Firewall & Vulnerability Scanner", title: "Open Source Antivirus With Firewall & Vulnerability Scanner" },
     ],
   },
   {
@@ -90,6 +93,8 @@ const internalProjects: Record<string, React.ReactNode> = {
   "Online_keylogger": <Project10 />,
   "Antivirus": <Project11 />,
   "QR-code": <Project12 />,
+  "Quishing (QR Phishing)": <Project12 />,
+  "Open Source Antivirus With Firewall & Vulnerability Scanner": <Project13 />,
 }
 
 export default function ProjectsApp() {
