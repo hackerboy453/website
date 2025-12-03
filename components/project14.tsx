@@ -1,23 +1,18 @@
 "use client"
 
 import React from "react"
-import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 export default function Project10() {
-  // Update this to your real project URL or GitHub repository
-  const projectLink = "https://www.kaggle.com/code/hackerboy221/youtube-chloe-model"
+  const projectLink = "https://github.com/adi8805/Open-source-antivirus-with-vulnerability-scanner-and-application-based-firewall"
 
-  // Tags for interactive display
+  // New specified tags
   const tags = [
-    "#RVC", "#VoiceAI", "#VoiceCloning", "#SpeechAI", "#AIModel", "#VoiceSynthesis", 
-    "#AudioAI", "#MachineLearning", "#DeepLearning", "#VoiceConversion", 
-    "#RetrievalBasedVoiceConversion", "#ArtificialIntelligence", "#GenerativeAI",
-    "#AIAudio", "#SpeechSynthesis", "#NeuralAudio", "#VoiceClone", "#AIVoice",
-    "#KaggleNotebook", "#ColabNotebook", "#ChloeVoice", "#CustomVoiceModel",
-    "#UltimateVocalRemover", "#VocalIsolation", "#AudioSeparation", "#Applio",
-    "#ModelTraining", "#VoiceGenerator", "#AudioCloning", "#AIExperiment"
+    "#Python", "#PyTorch", "#Torch", "#CUDA", "#GPU", "#GoogleColab", "#Kaggle", "#Notebook",
+    "#RVC", "#RetrievalBasedVoiceConversion", "#RVCModel", "#Applio", "#UVR", "#UltimateVocalRemover",
+    "#Demucs", "#MDXNet", "#ffmpeg", "#Librosa", "#NumPy", "#SoundFile", "#torch-cuda",
+    "#rvc-webui", "#python3", "#gpu-accelerated-training", "#vocal-separation-models", "#uvr-v5"
   ];
 
   return (
@@ -47,7 +42,7 @@ export default function Project10() {
         <ul className="list-disc list-inside leading-relaxed space-y-2 mb-8">
           <li>Custom dataset creation and cleaning for Chloe's voice characteristics</li>
           <li>Vocal isolation using Ultimate Vocal Remover (UVR) for high-quality training data</li>
-          <li>RVC model training on Kaggle/Colab with optimized hyperparameters</li>
+          <li>RVC model training on Kaggle/Colab with GPU acceleration</li>
           <li>Real-time voice conversion pipeline using trained model weights</li>
           <li>Complete audio processing workflow from source audio to deployable voice model</li>
         </ul>
@@ -78,14 +73,13 @@ export default function Project10() {
             window.open(projectLink, "_blank", "noopener,noreferrer")
           }
         >
-          View Project on Kaggle
+          View Project on GitHub
         </Button>
         <Button
           variant="outline"
           size="lg"
           className="hover:scale-[1.02] transition-all duration-200 px-8"
           onClick={() => {
-            // Copy tags to clipboard functionality
             navigator.clipboard.writeText(tags.join(' '));
           }}
         >
