@@ -14,6 +14,7 @@ import Project10 from "@/components/project10"
 import Project11 from "@/components/project11"
 import Project12 from "@/components/project12"
 import Project13 from "@/components/project13"
+import Project14 from "@/components/project14"
 
 // Background images for categories
 const categoryBackgrounds: Record<string, string> = {
@@ -53,6 +54,7 @@ const projectCategories = [
     projects: [
       { id: "rag-model", title: "Rag Model" }, // Project4
       { id: "regression-forest", title: "Regression Forest Model" }, // Project5
+      { id: "Retrieval-Based Voice Conversion (RVC)", title: "Retrieval-Based Voice Conversion (RVC)" }, // Project5
     ],
   },
   {
@@ -95,6 +97,7 @@ const internalProjects: Record<string, React.ReactNode> = {
   "QR-code": <Project12 />,
   "Quishing (QR Phishing)": <Project12 />,
   "Open Source Antivirus With Firewall & Vulnerability Scanner": <Project13 />,
+  "Retrieval-Based Voice Conversion (RVC)": <Project14 />,
 }
 
 export default function ProjectsApp() {
