@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 export default function Project10() {
-  const projectLink = "https://github.com/adi8805/Open-source-antivirus-with-vulnerability-scanner-and-application-based-firewall"
+  const projectLink = "https://www.kaggle.com/code/hackerboy221/rvc-applio"
 
   // New specified tags
   const tags = [
@@ -73,7 +73,7 @@ export default function Project10() {
             window.open(projectLink, "_blank", "noopener,noreferrer")
           }
         >
-          View Project on GitHub
+          View Project on kaggle
         </Button>
         <Button
           variant="outline"
