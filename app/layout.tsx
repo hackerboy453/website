@@ -4,6 +4,7 @@ import { GeistMono } from 'geist/font/mono'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { ThemeProvider } from "@/components/theme-provider"
+import { SoundProvider } from "@/components/sound-provider"
 
 export const metadata: Metadata = {
   title: 'Adi Bio',
@@ -30,8 +31,10 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
-          {children}
-          <Analytics />
+          <SoundProvider>
+            {children}
+            <Analytics />
+          </SoundProvider>
         </ThemeProvider>
       </body>
     </html>
