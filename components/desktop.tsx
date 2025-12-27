@@ -14,7 +14,8 @@ import Experience from "@/components/Experience"
 import Skills from "@/components/Skills"
 import Terminal from "@/components/Terminal"
 import { useTheme } from "@/components/theme-provider"
-import { Sun, Moon } from "lucide-react"
+import { useSound } from "@/components/sound-provider"
+import { Sun, Moon, Volume2, VolumeX } from "lucide-react"
 
 interface Window {
   id: string
@@ -129,7 +130,12 @@ export default function Desktop() {
     { id: "personalize", name: "Personalize", image: "/icons/settings.jpg" },
   ]
 
+  const { isMuted } = useSound()
+  
   const playSound = (type: "click" | "open" | "close" | "minimize" | "drag" | "drop") => {
+    // Mute click, open, and close sounds when muted
+    // (open is muted because opening windows is triggered by clicks)
+    if ((type === "click" || type === "open" || type === "close") && isMuted) return
     const audio = new Audio(`/${type}-sound.mp3`)
     audio.volume = 0.1
     audio.play().catch(() => {})
@@ -485,7 +491,7 @@ export default function Desktop() {
       {contextMenu.show && <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={() => setContextMenu(prev => ({ ...prev, show: false }))} />}
       <div className="absolute bottom-0 left-0 right-0 h-12 bg-card/90 backdrop-blur-sm border-t border-border/50 z-50">
         <div className="flex items-center justify-between h-full px-4">
-          <Button variant="ghost" size="sm" className="text-primary font-semibold hover:bg-primary/10">Adi OS</Button>
+          <Button variant="ghost" size="sm" className="text-primary font-semibold hover:bg-primary/10">Adi Portfolio</Button>
           <div className="flex items-center space-x-2">
             {windows.map(window => (
               <Button
@@ -502,6 +508,7 @@ export default function Desktop() {
               </Button>
             ))}
             <ThemeToggleButton />
+            <MuteButton />
           </div>
           <div className="flex items-center space-x-4 text-sm text-muted-foreground">
             <span>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -510,6 +517,21 @@ export default function Desktop() {
         </div>
       </div>
     </div>
+  )
+}
+
+function MuteButton() {
+  const { isMuted, toggleMute } = useSound()
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="w-10 h-10 p-0 flex items-center justify-center"
+      aria-label="Toggle sound"
+      onClick={toggleMute}
+    >
+      {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+    </Button>
   )
 }
 
@@ -530,6 +552,7 @@ function ThemeToggleButton() {
 
 function PersonalizeWindow() {
   const { theme, toggleTheme } = useTheme()
+  const { isMuted, toggleMute } = useSound()
   return (
     <div className="p-6 text-base text-foreground">
       <h2 className="text-2xl font-bold mb-4">Personalize</h2>
@@ -547,6 +570,16 @@ function PersonalizeWindow() {
             onClick={() => { if (theme !== "dark") toggleTheme() }}
           >
             Dark
+          </button>
+        </div>
+        <div className="flex flex-col gap-4 mt-4">
+          <span className="font-medium">Sound:</span>
+          <button
+            className={`px-4 py-2 rounded border flex items-center gap-2 ${isMuted ? "bg-card text-foreground" : "bg-primary text-white"}`}
+            onClick={toggleMute}
+          >
+            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            {isMuted ? "Unmute" : "Mute"}
           </button>
         </div>
       </div>
