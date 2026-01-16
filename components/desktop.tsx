@@ -145,7 +145,7 @@ export default function Desktop() {
   const constrainWindowPosition = (x: number, y: number, width: number, height: number) => {
     const screenWidth = window.innerWidth
     const screenHeight = window.innerHeight
-    const taskbarHeight = 48 // Height of the bottom taskbar
+    const taskbarHeight = 48 // Height of the top taskbar
     const snapThreshold = 20 // Distance from edge to trigger snapping
     
     let constrainedX = x
@@ -164,17 +164,17 @@ export default function Desktop() {
       constrainedX = Math.max(0, Math.min(x, screenWidth - width))
     }
     
-    // Snap to top edge
-    if (y < snapThreshold && y > -snapThreshold) {
-      constrainedY = 0
+    // Snap to top edge (below taskbar)
+    if (y < taskbarHeight + snapThreshold && y > taskbarHeight - snapThreshold) {
+      constrainedY = taskbarHeight
     }
-    // Snap to bottom edge (above taskbar)
-    else if (y > screenHeight - height - taskbarHeight - snapThreshold && y < screenHeight - height - taskbarHeight + snapThreshold) {
-      constrainedY = screenHeight - height - taskbarHeight
+    // Snap to bottom edge
+    else if (y > screenHeight - height - snapThreshold && y < screenHeight - height + snapThreshold) {
+      constrainedY = screenHeight - height
     }
-    // Ensure window doesn't go off the top edge
+    // Ensure window doesn't go off the edges
     else {
-      constrainedY = Math.max(0, Math.min(y, screenHeight - height - taskbarHeight))
+      constrainedY = Math.max(taskbarHeight, Math.min(y, screenHeight - height))
     }
     
     return { x: constrainedX, y: constrainedY }
@@ -340,7 +340,7 @@ export default function Desktop() {
           ? {
               ...w,
               isMaximized: !w.isMaximized,
-              position: w.isMaximized ? getNewWindowPosition(windowId) : { x: 0, y: 0 },
+              position: w.isMaximized ? getNewWindowPosition(windowId) : { x: 0, y: 48 },
               size: w.isMaximized
                 ? { ...DEFAULT_WINDOW_SIZE }
                 : { width: window.innerWidth, height: window.innerHeight - 48 },
@@ -411,7 +411,7 @@ export default function Desktop() {
 
   return (
     <div
-      className="h-screen w-full relative overflow-hidden select-none pb-14"
+      className="h-screen w-full relative overflow-hidden select-none pt-14"
       onClick={handleDesktopClick}
       onContextMenu={handleRightClick}
       style={{
@@ -424,7 +424,7 @@ export default function Desktop() {
       }}
     >
       <div className="absolute inset-0 bg-black/20"></div>
-      <div className="absolute top-8 left-4 flex flex-row items-start z-10">
+      <div className="absolute top-20 left-4 flex flex-row items-start z-10">
         {iconColumns.map((column, colIdx) => (
           <div key={colIdx} className="flex flex-col items-center" style={{ marginRight: ICON_HORIZONTAL_GAP }}>
             {column.map((icon, rowIdx) => (
@@ -489,16 +489,16 @@ export default function Desktop() {
         )
       )}
       {contextMenu.show && <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={() => setContextMenu(prev => ({ ...prev, show: false }))} />}
-      <div className="absolute bottom-0 left-0 right-0 h-12 bg-card/90 backdrop-blur-sm border-t border-border/50 z-50">
+      <div className="absolute top-0 left-0 right-0 h-12 bg-black/20 backdrop-blur-md border-b border-white/10 z-50">
         <div className="flex items-center justify-between h-full px-4">
-          <Button variant="ghost" size="sm" className="text-primary font-semibold hover:bg-primary/10">Adi Portfolio</Button>
+          <Button variant="ghost" size="sm" className="text-white/90 font-semibold hover:bg-white/10">Adi Portfolio</Button>
           <div className="flex items-center space-x-2">
             {windows.map(window => (
               <Button
                 key={window.id}
                 variant={activeWindow === window.id ? "default" : "ghost"}
                 size="sm"
-                className="text-xs hover:scale-105"
+                className={`text-xs hover:scale-105 ${activeWindow === window.id ? "bg-white/20 text-white" : "text-white/80 hover:bg-white/10"}`}
                 onClick={() => {
                   if (window.isMinimized) restoreWindow(window.id);
                   else setActiveWindow(window.id);
@@ -510,7 +510,7 @@ export default function Desktop() {
             <ThemeToggleButton />
             <MuteButton />
           </div>
-          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+          <div className="flex items-center space-x-4 text-sm text-white/90">
             <span>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             <span>{time.toLocaleDateString()}</span>
           </div>
@@ -526,7 +526,7 @@ function MuteButton() {
     <Button
       variant="ghost"
       size="icon"
-      className="w-10 h-10 p-0 flex items-center justify-center"
+      className="w-10 h-10 p-0 flex items-center justify-center text-white/90 hover:bg-white/10"
       aria-label="Toggle sound"
       onClick={toggleMute}
     >
@@ -541,7 +541,7 @@ function ThemeToggleButton() {
     <Button
       variant="ghost"
       size="icon"
-      className="w-10 h-10 p-0 flex items-center justify-center"
+      className="w-10 h-10 p-0 flex items-center justify-center text-white/90 hover:bg-white/10"
       aria-label="Toggle theme"
       onClick={toggleTheme}
     >
