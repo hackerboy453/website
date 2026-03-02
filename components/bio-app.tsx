@@ -23,8 +23,7 @@ export default function BioApp() {
               <p className="text-xl text-primary">Computer Science</p>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Passionate developer with 5+ years of experience creating innovative web applications. I love turning
-              complex problems into simple, beautiful solutions that users enjoy.
+              Passionate developer with experience creating web applications and solving technical problems. I enjoy building practical solutions and continuously learning new technologies.
             </p>
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
@@ -51,13 +50,19 @@ export default function BioApp() {
           </h3>
           <div className="pl-4 space-y-4">
             <div>
-              <div className="font-bold leading-tight uppercase text-foreground">• Class 12th with PCMB with Physical Education</div>
-              <div className="text-muted-foreground">Govt Sarvodaya Boys SSS Radhey Sham Park DL</div>
+              <div className="font-bold leading-tight uppercase text-foreground">
+                • Class 12th with PCMB with Physical Education
+              </div>
+              <div className="text-muted-foreground">
+                Govt Sarvodaya Boys SSS Radhey Sham Park, Delhi
+              </div>
             </div>
             <div>
-              <div className="font-bold leading-tight uppercase text-foreground">• Pursuing BCA from IP University</div>
+              <div className="font-bold leading-tight uppercase text-foreground">
+                • BCA (Computer Applications) — Dropped Out
+              </div>
               <div className="text-muted-foreground">
-                Sri Guru Tegh Bahadur Institute of Management &amp; IT
+                Sri Guru Tegh Bahadur Institute of Management & IT, IP University — March 2026
               </div>
             </div>
           </div>
@@ -68,9 +73,8 @@ export default function BioApp() {
           <h3 className="text-lg font-semibold mb-4 text-foreground">When I'm Not Coding</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
             <div className="space-y-2">
-              <p>📚Read Non-Fiction books</p>
-              <p>🎮 Play Triple A and Esports Video games</p>
-              <p>🏃‍♂️ GYM</p>
+              <p>📚 Read Non-Fiction Books</p>
+              <p>🎮 Play Triple A and Esports Video Games</p>
             </div>
           </div>
         </Card>
