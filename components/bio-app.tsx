@@ -59,7 +59,7 @@ export default function BioApp() {
             </div>
             <div>
               <div className="font-bold leading-tight uppercase text-foreground">
-                • BCA (Computer Applications) — Dropped Out
+                • BCA (Computer Applications) 
               </div>
               <div className="text-muted-foreground">
                 Sri Guru Tegh Bahadur Institute of Management & IT, IP University — March 2026
