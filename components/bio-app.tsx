@@ -62,7 +62,7 @@ export default function BioApp() {
                 • BCA (Computer Applications) 
               </div>
               <div className="text-muted-foreground">
-                Sri Guru Tegh Bahadur Institute of Management & IT, IP University — March 2026
+                Sri Guru Tegh Bahadur Institute of Management & IT, IP University - 2023-2026
               </div>
             </div>
           </div>
