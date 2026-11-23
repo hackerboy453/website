@@ -26,6 +26,7 @@ const experience: ExperienceItem[] = [
   {
     title: "Cybersecurity Intern (Remote)",
     company: "Apex Planets",
+    period: "Sep, 2025 - Oct, 2025",
     description: "Completed a cybersecurity internship at Apex Planets, learning web application penetration testing, networking, and system hacking. Gained hands-on experience through practical labs on DVWA, bWAPP, and other intentionally vulnerable environments, practicing vulnerability discovery and exploitation.",
   },
 ]
