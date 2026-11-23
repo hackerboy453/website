@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { X, Minus, Square } from "lucide-react"
+import { X, Minus, Square, Plus } from "lucide-react"
 import BioApp from "@/components/bio-app"
 import ProjectsApp from "@/components/projects-app"
 import AchievementsApp from "@/components/achievements-app"
@@ -30,6 +30,15 @@ interface Window {
 const ICONS_PER_COLUMN = 5
 const ICON_VERTICAL_GAP = 36
 const ICON_HORIZONTAL_GAP = 120
+const ICON_SIZE = 64
+const ICON_IMAGE_SIZE = 40
+const ICON_LABEL_SIZE = 12
+const ICON_STACK_GAP = 8
+
+const ICON_SCALE_MIN = 0.75
+const ICON_SCALE_MAX = 1.5
+const ICON_SCALE_STEP = 0.1
+const ICON_SCALE_STORAGE_KEY = "portfolio-icon-scale"
 
 const DEFAULT_WINDOW_SIZE = { width: 700, height: 500 }
 const START_POS_X = 100
@@ -74,6 +83,7 @@ export default function Desktop() {
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; show: boolean }>({ x: 0, y: 0, show: false })
   const [isLoading, setIsLoading] = useState<string | null>(null)
   const [currentWallpaper, setCurrentWallpaper] = useState<string>("")
+  const [iconScale, setIconScale] = useState(1)
 
   const draggedWindowRef = useRef<string | null>(null)
   const dragOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
@@ -114,6 +124,18 @@ export default function Desktop() {
     return () => clearInterval(wallpaperInterval)
   }, [])
 
+  // Restore the saved icon size, or choose a comfortable default for the screen width.
+  useEffect(() => {
+    const savedScale = Number.parseFloat(localStorage.getItem(ICON_SCALE_STORAGE_KEY) ?? "")
+    if (Number.isFinite(savedScale)) {
+      setIconScale(Math.min(ICON_SCALE_MAX, Math.max(ICON_SCALE_MIN, savedScale)))
+      return
+    }
+
+    const viewportWidth = window.innerWidth
+    setIconScale(viewportWidth < 480 ? 0.8 : viewportWidth < 768 ? 0.9 : 1)
+  }, [])
+
   useEffect(() => {
     const handler = () => openWindow("personalize")
     window.addEventListener("open-personalize-window", handler)
@@ -142,6 +164,15 @@ export default function Desktop() {
     const audio = new Audio(`/${type}-sound.mp3`)
     audio.volume = 0.1
     audio.play().catch(() => {})
+  }
+
+  const adjustIconScale = (delta: number) => {
+    const nextScale = Math.min(
+      ICON_SCALE_MAX,
+      Math.max(ICON_SCALE_MIN, Math.round((iconScale + delta) * 10) / 10)
+    )
+    setIconScale(nextScale)
+    localStorage.setItem(ICON_SCALE_STORAGE_KEY, String(nextScale))
   }
 
   // Helper function to constrain window position within screen boundaries
@@ -412,6 +443,13 @@ export default function Desktop() {
     iconColumns.push(desktopIcons.slice(i, i + ICONS_PER_COLUMN))
   }
 
+  const scaledIconSize = Math.round(ICON_SIZE * iconScale)
+  const scaledIconImageSize = Math.round(ICON_IMAGE_SIZE * iconScale)
+  const scaledIconLabelSize = Math.max(10, Math.round(ICON_LABEL_SIZE * iconScale))
+  const scaledIconStackGap = Math.round(ICON_STACK_GAP * iconScale)
+  const scaledVerticalGap = Math.round(ICON_VERTICAL_GAP * iconScale)
+  const scaledHorizontalGap = Math.round(ICON_HORIZONTAL_GAP * iconScale)
+
   return (
     <div
       className="h-screen w-full relative overflow-hidden select-none pt-14"
@@ -429,19 +467,33 @@ export default function Desktop() {
       <div className="absolute inset-0 bg-black/20"></div>
       <div className="absolute top-20 left-4 flex flex-row items-start z-10">
         {iconColumns.map((column, colIdx) => (
-          <div key={colIdx} className="flex flex-col items-center" style={{ marginRight: ICON_HORIZONTAL_GAP }}>
+          <div key={colIdx} className="flex flex-col items-center" style={{ marginRight: scaledHorizontalGap }}>
             {column.map((icon, rowIdx) => (
               <div
                 key={icon.id}
-                className="flex flex-col items-center space-y-2 cursor-pointer group relative mb-5"
-                style={{ marginBottom: rowIdx === column.length - 1 ? 0 : ICON_VERTICAL_GAP }}
+                className="flex flex-col items-center cursor-pointer group relative"
+                style={{
+                  gap: scaledIconStackGap,
+                  marginBottom: rowIdx === column.length - 1 ? 0 : scaledVerticalGap,
+                }}
                 onClick={e => { e.stopPropagation(); openWindow(icon.id) }}
               >
-                <Card className="w-16 h-16 flex items-center justify-center bg-card/90 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:bg-card/95 relative">
-                  <img src={icon.image} alt={icon.name} className="w-10 h-10 object-contain" />
+                <Card
+                  className="flex items-center justify-center bg-card/90 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:bg-card/95 relative"
+                  style={{ width: scaledIconSize, height: scaledIconSize }}
+                >
+                  <img
+                    src={icon.image}
+                    alt={icon.name}
+                    className="object-contain"
+                    style={{ width: scaledIconImageSize, height: scaledIconImageSize }}
+                  />
                   {isLoading === icon.id && <div className="absolute inset-0 bg-primary/20 rounded-lg animate-pulse"></div>}
                 </Card>
-                <span className="text-xs text-center text-white/90 group-hover:text-white transition-colors duration-200 drop-shadow-lg">
+                <span
+                  className="text-center text-white/90 group-hover:text-white transition-colors duration-200 drop-shadow-lg"
+                  style={{ fontSize: scaledIconLabelSize }}
+                >
                   {icon.name}
                 </span>
               </div>
@@ -510,12 +562,17 @@ export default function Desktop() {
                 {window.title}
               </Button>
             ))}
+            <IconSizeControls
+              scale={iconScale}
+              onDecrease={() => adjustIconScale(-ICON_SCALE_STEP)}
+              onIncrease={() => adjustIconScale(ICON_SCALE_STEP)}
+            />
             <ThemeToggleButton />
             <MuteButton />
           </div>
           <div className="flex items-center space-x-4 text-sm text-white/90">
             <span>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-            <span>{time.toLocaleDateString()}</span>
+            <span className="hidden sm:inline">{time.toLocaleDateString()}</span>
           </div>
         </div>
       </div>
@@ -550,6 +607,47 @@ function ThemeToggleButton() {
     >
       {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
     </Button>
+  )
+}
+
+function IconSizeControls({
+  scale,
+  onDecrease,
+  onIncrease,
+}: {
+  scale: number
+  onDecrease: () => void
+  onIncrease: () => void
+}) {
+  return (
+    <div
+      className="flex shrink-0 items-center rounded-md border border-white/20 bg-white/5"
+      title={`Desktop icon size: ${Math.round(scale * 100)}%`}
+    >
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 rounded-r-none p-0 text-white/90 hover:bg-white/10"
+        onClick={onDecrease}
+        disabled={scale <= ICON_SCALE_MIN}
+        aria-label="Decrease icon size"
+      >
+        <Minus className="h-4 w-4" />
+      </Button>
+      <span className="hidden w-10 select-none text-center text-[10px] font-medium tabular-nums text-white/80 sm:block">
+        {Math.round(scale * 100)}%
+      </span>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 rounded-l-none p-0 text-white/90 hover:bg-white/10"
+        onClick={onIncrease}
+        disabled={scale >= ICON_SCALE_MAX}
+        aria-label="Increase icon size"
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+    </div>
   )
 }
 
