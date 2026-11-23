@@ -17,7 +17,7 @@ const socialLinks = [
   {
     id: "linkedin",
     label: "LinkedIn",
-    url: "https://www.linkedin.com/in/adi-sec-82121a2b0/",
+    url: "https://www.linkedin.com/in/aditya-singh-varma-82121a2b0/",
     icon: <FaLinkedin size={28} />,
     buttonText: "Connect on LinkedIn",
     img: "/linkedin.jpg",
