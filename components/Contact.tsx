@@ -2,6 +2,7 @@
 
 import React from "react"
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa"
+import MailForm from "@/components/mail-form"
 
 const socialLinks = [
   {
@@ -45,6 +46,7 @@ export default function Contact() {
 
       <div className="flex-1 overflow-y-auto px-4 pb-6">
         <div className="flex flex-col gap-8">
+          <MailForm />
           {socialLinks.map(({ id, label, url, icon, buttonText, img, ring }) => (
             <div
               key={id}
