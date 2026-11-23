@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Award, Trophy, Code, Users, Zap, Star, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { FaLinkedin } from "react-icons/fa"
 
 export default function AchievementsApp() {
   const achievements = [
@@ -114,6 +115,21 @@ export default function AchievementsApp() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="mt-6 flex flex-col gap-3 rounded-lg border border-border bg-muted/50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">
+            Want to see more certificates? Visit my LinkedIn profile.
+          </p>
+          <Button asChild variant="outline" className="shrink-0">
+            <a
+              href="https://www.linkedin.com/in/aditya-singh-varma-82121a2b0/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaLinkedin className="h-4 w-4" />
+              Visit LinkedIn Profile
+            </a>
+          </Button>
         </div>
       </Card>
     </div>
