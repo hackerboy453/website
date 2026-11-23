@@ -48,6 +48,9 @@ const FOLDER_ALIASES: Record<string, string> = {
   skills: "skills",
   certificate: "certificate",
   contact: "contact",
+  mail: "contact",
+  email: "contact",
+  "mail me": "contact",
   terminal: "terminal",
 }
 
