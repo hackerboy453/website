@@ -3,7 +3,14 @@
 import React from "react"
 import { Card } from "@/components/ui/card"
 
-const experience = [
+interface ExperienceItem {
+  title: string
+  company: string
+  period?: string
+  description: string
+}
+
+const experience: ExperienceItem[] = [
   {
     title: "Web Development & Cyber Malware Instructor",
     company: "Hack Secure",
@@ -15,6 +22,11 @@ const experience = [
     company: "Grastech",
     period: "June, 2025 - August, 2025",
     description: "Interned at Grastech (Jun–Aug 2025), contributing to threat analysis, vulnerability assessments, penetration testing, malware research, and developing security automation scripts. Gained hands-on experience with network security, incident response, and risk mitigation strategies across multiple projects.",
+  },
+  {
+    title: "Cybersecurity Intern (Remote)",
+    company: "Apex Planets",
+    description: "Completed a cybersecurity internship at Apex Planets, learning web application penetration testing, networking, and system hacking. Gained hands-on experience through practical labs on DVWA, bWAPP, and other intentionally vulnerable environments, practicing vulnerability discovery and exploitation.",
   },
 ]
 
@@ -38,7 +50,9 @@ export default function Experience() {
               <div className="text-primary font-bold text-base leading-normal">
                 {job.company}
               </div>
-              <div className="text-muted-foreground text-sm mb-2">{job.period}</div>
+              {job.period && (
+                <div className="text-muted-foreground text-sm mb-2">{job.period}</div>
+              )}
               <div className="text-foreground text-base">{job.description}</div>
             </div>
           </div>
